@@ -1,0 +1,7 @@
+---
+import Base from '../layouts/Base.astro';
+import Brand from '../components/Brand.astro';
+import { T } from '../i18n/content.js';
+const lang = 'en';
+---
+<Base lang={lang} page="brand" title={T[lang].meta.brandTitle} description={T[lang].brand.lead}><Brand lang={lang} /></Base>

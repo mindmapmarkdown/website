@@ -1,0 +1,123 @@
+---
+import { LANGS, T, GH, pathFor } from '../i18n/content.js';
+import markSvg from '../assets/mindmapmarkdown-mark.svg?raw';
+
+const { lang, page = '', title, description } = Astro.props;
+const t = T[lang];
+const L = LANGS.find((l) => l.code === lang);
+const site = 'https://www.mindmapmarkdown.org';
+const canonical = site + pathFor(lang, page);
+const home = pathFor(lang);
+const anchors = ['why', 'spec', 'viewer', 'implementations', 'community'];
+const mark = markSvg.replace('<svg ', '<svg aria-hidden="true" class="logo" ');
+---
+<!doctype html>
+<html lang={L.html}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {LANGS.map((l) => <link rel="alternate" hreflang={l.html} href={site + pathFor(l.code, page)} />)}
+  <link rel="alternate" hreflang="x-default" href={site + pathFor('en', page)} />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0F2A3F" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Mindmap Markdown" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={site + '/brand/og-image-1200x630.png'} />
+  <meta name="twitter:card" content="summary_large_image" />
+</head>
+<body class={`lang-${lang}`}>
+  <header class="site">
+    <div class="wrap bar">
+      <a class="brand" href={home} aria-label="Mindmap Markdown"><Fragment set:html={mark} /><span><b>Mindmap</b> Markdown</span></a>
+      <nav class="gnb" aria-label="Main">
+        {t.nav.map((n, i) => <a href={`${home}#${anchors[i]}`}>{n}</a>)}
+      </nav>
+      <details class="langs">
+        <summary aria-label={t.ui.language}>🌐 {L.short}</summary>
+        <ul>
+          {LANGS.map((l) => <li><a href={pathFor(l.code, page)} hreflang={l.html} lang={l.html} aria-current={l.code === lang ? 'true' : undefined}>{l.label}</a></li>)}
+        </ul>
+      </details>
+      <a class="btn gh" href={GH.org}>{t.ui.github}</a>
+      <details class="mnav">
+        <summary aria-label={t.ui.menu}>☰</summary>
+        <div class="panel">
+          {t.nav.map((n, i) => <a href={`${home}#${anchors[i]}`}>{n}</a>)}
+          <a href={pathFor(lang, 'brand')}>{t.ui.brand}</a>
+          <div class="ml">{LANGS.map((l) => <a href={pathFor(l.code, page)} lang={l.html}>{l.label}</a>)}</div>
+          <a href={GH.org}>GitHub</a>
+        </div>
+      </details>
+    </div>
+  </header>
+  <main><slot /></main>
+  <footer class="site">
+    <div class="wrap foot">
+      <div>
+        <b>Mindmap Markdown</b><br />
+        {t.footer.license}<br />
+        {t.footer.contact} <a href="mailto:spec@mindmapmarkdown.org">spec@mindmapmarkdown.org</a> · {t.footer.security} <a href="mailto:security@mindmapmarkdown.org">security@mindmapmarkdown.org</a>
+      </div>
+      <div class="fr">
+        <a class="brandlink" href={pathFor(lang, 'brand')}>{t.ui.brand}</a><br />
+        {LANGS.map((l, i) => <>{i > 0 && ' · '}<a href={pathFor(l.code, page)} lang={l.html}>{l.label}</a></>)}<br />
+        <a href={GH.org}>GitHub</a> · <a href={GH.discussions}>Discussions</a> · <a href={GH.rfcs}>RFCs</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style is:global>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+  body { margin: 0; color: #0F2A3F; background: #fff; line-height: 1.5;
+    font-family: Inter, -apple-system, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK KR', sans-serif;
+    word-break: keep-all; overflow-wrap: break-word; }
+  body.lang-ja, body.lang-zh { word-break: normal; line-break: strict; }
+  a { color: inherit; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  header.site { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.94); backdrop-filter: blur(6px); border-bottom: 1px solid #E5EAF0; }
+  .bar { display: flex; align-items: center; gap: 24px; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 19px; white-space: nowrap; }
+  .brand .logo { height: 40px; width: auto; }
+  .gnb { display: flex; gap: 22px; flex: 1; font-size: 15px; color: #36506A; }
+  .gnb a { text-decoration: none; white-space: nowrap; }
+  .gnb a:hover { color: #E8603C; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 12px 20px; font-weight: 600; font-size: 15px; text-decoration: none; }
+  .btn.gh { background: #0F2A3F; color: #fff; padding: 8px 14px; font-size: 14px; }
+  details.langs { position: relative; }
+  details.langs summary, details.mnav summary { list-style: none; cursor: pointer; }
+  details.langs summary::-webkit-details-marker, details.mnav summary::-webkit-details-marker { display: none; }
+  details.langs summary { border: 1px solid #CBD5E1; border-radius: 8px; padding: 6px 10px; font-size: 14px; }
+  details.langs ul { position: absolute; right: 0; top: 40px; list-style: none; margin: 0; padding: 6px; background: #fff; border: 1px solid #E2E8F0; border-radius: 10px; box-shadow: 0 10px 30px rgba(15,42,63,.12); min-width: 130px; }
+  details.langs li a { display: block; padding: 7px 10px; text-decoration: none; border-radius: 6px; font-size: 14px; }
+  details.langs li a:hover { background: #F1F5F9; }
+  details.langs li a[aria-current] { font-weight: 700; color: #E8603C; }
+  details.mnav { display: none; margin-left: auto; }
+  details.mnav summary { font-size: 26px; padding: 0 4px; }
+  details.mnav .panel { position: absolute; left: 0; right: 0; top: 68px; background: #fff; border-bottom: 1px solid #E2E8F0; padding: 10px 20px 18px; display: grid; gap: 4px; box-shadow: 0 14px 30px rgba(15,42,63,.12); }
+  details.mnav .panel a { padding: 10px 4px; text-decoration: none; border-bottom: 1px solid #F1F5F9; }
+  details.mnav .ml { display: flex; gap: 14px; padding: 8px 4px; }
+  details.mnav .ml a { border: 0; padding: 4px 0; color: #5B6F86; }
+  footer.site { border-top: 1px solid #E2E8F0; padding: 30px 0; color: #64748B; font-size: 14px; margin-top: 20px; }
+  .foot { display: flex; justify-content: space-between; gap: 24px; }
+  .foot a { color: #36506A; }
+  .foot .fr { text-align: right; }
+  .foot .brandlink { color: #E8603C; font-weight: 600; }
+  @media (max-width: 900px) {
+    .gnb, details.langs, .btn.gh { display: none; }
+    details.mnav { display: block; }
+    .wrap { padding: 0 20px; }
+    .foot { flex-direction: column; }
+    .foot .fr { text-align: left; }
+  }
+</style>

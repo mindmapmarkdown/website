@@ -1,0 +1,16 @@
+{
+  "name": "mindmapmarkdown-website",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Source of www.mindmapmarkdown.org",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "7.4.2"
+  }
+}

@@ -1,0 +1,154 @@
+---
+import { T, GH } from '../i18n/content.js';
+import framed from '../assets/mindmapmarkdown-framed.svg?raw';
+import framedDark from '../assets/mindmapmarkdown-framed-on-dark.svg?raw';
+import mark from '../assets/mindmapmarkdown-mark.svg?raw';
+import markDark from '../assets/mindmapmarkdown-mark-on-dark.svg?raw';
+import story from '../assets/story.svg?raw';
+import construction from '../assets/construction.svg?raw';
+
+const { lang } = Astro.props;
+const b = T[lang].brand;
+
+const fit = (svg, h) => svg.replace(/<svg ([^>]*?)width="[^"]*" height="[^"]*"/, `<svg $1 height="${h}" style="width:auto;max-width:100%"`);
+const fluid = (svg) => svg.replace(/<svg ([^>]*?)width="[^"]*" height="[^"]*"/, '<svg $1 style="width:100%;height:auto"');
+
+const en = T.en.brand.guides;
+let cons = construction;
+for (const k of Object.keys(en)) cons = cons.replace(`>${en[k]}<`, `>${b.guides[k]}<`);
+
+const vb = mark.match(/viewBox="([^"]+)"/)[1].split(' ').map(Number);
+const inner = mark.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+const W = vb[2], H = vb[3];
+const dontSvg = (i) => {
+  let g = inner;
+  if (i === 0) g = g.replaceAll('#0F2A3F', '#16A34A').replaceAll('#E8603C', '#3B82F6').replace(/#2DD4BF|#14B8A6|#0D9488|#0F766E/g, '#F43F5E');
+  const tr = i === 1 ? `transform="translate(${vb[0] - W * 0.08} ${vb[1] + 18}) scale(1.16 0.72) translate(${-vb[0]} ${-vb[1]})"` : i === 2 ? `transform="rotate(-14 ${vb[0] + W / 2} ${vb[1] + H / 2})"` : '';
+  const filt = i === 3 ? 'filter="url(#sh)"' : '';
+  const x1 = vb[0] + W + 8;
+  return `<svg viewBox="${vb[0] - 6} ${vb[1] - 6} ${W + 50} ${H + 12}" style="width:100%;height:auto" aria-hidden="true"><defs><filter id="sh"><feDropShadow dx="6" dy="8" stdDeviation="4" flood-color="#000" flood-opacity="0.45"/></filter></defs><g ${tr} ${filt}>${g}</g><g stroke="#DC2626" stroke-width="6" stroke-linecap="round"><line x1="${x1}" y1="${vb[1] + 4}" x2="${x1 + 24}" y2="${vb[1] + 28}"/><line x1="${x1 + 24}" y1="${vb[1] + 4}" x2="${x1}" y2="${vb[1] + 28}"/></g></svg>`;
+};
+const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)).join(', ');
+const fav = `<img src="/brand/favicon/favicon.svg" width="64" height="64" alt=""> <img src="/brand/favicon/favicon.svg" width="32" height="32" alt=""> <img src="/brand/favicon/favicon.svg" width="16" height="16" alt="">`;
+---
+<section class="bhero">
+  <div class="wrap">
+    <div class="crumb">{b.crumb}</div>
+    <h1>{b.title}</h1>
+    <p class="blead">{b.lead}</p>
+    <div class="tiles2">
+      <div class="tile"><Fragment set:html={fit(framed, 220)} /></div>
+      <div class="tile dark"><Fragment set:html={fit(framedDark, 200)} /></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>{b.storyT}</h2>
+    <div class="story">
+      <div><Fragment set:html={fluid(story)} /></div>
+      <ol>{b.story.map((s, i) => <li><span class="num">{i + 1}</span><div><b>{s[0]}</b><span>{s[1]}</span></div></li>)}</ol>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>{b.colorT}</h2>
+    <p class="sd">{b.colorD}</p>
+    <div class="sw">
+      {b.colors.map((c) => (
+        <div class="c"><div class="chip" style={`background:${c.hex}`}></div><div class="ci"><b>{c.name}</b><code>{c.hex} · RGB {rgb(c.hex)}</code><small>{c.use}</small></div></div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>{b.consT}</h2>
+    <p class="sd">{b.consD}</p>
+    <div class="cons">
+      <div><Fragment set:html={fluid(cons)} /></div>
+      <ul>{b.rules.map((r) => <li>{r}</li>)}</ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>{b.verT}</h2>
+    <div class="vers">
+      <div class="v"><div class="pv"><Fragment set:html={fit(framed, 92)} /></div><b>{b.vers[0][0]}</b><p>{b.vers[0][1]}</p></div>
+      <div class="v"><div class="pv"><Fragment set:html={fit(mark, 66)} /></div><b>{b.vers[1][0]}</b><p>{b.vers[1][1]}</p></div>
+      <div class="v"><div class="pv"><Fragment set:html={fav} /></div><b>{b.vers[2][0]}</b><p>{b.vers[2][1]}</p></div>
+      <div class="v"><div class="pv dk"><Fragment set:html={fit(markDark, 66)} /></div><b>{b.vers[3][0]}</b><p>{b.vers[3][1]}</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>{b.dontT}</h2>
+    <div class="donts">{b.donts.map((d, i) => <div class="d"><Fragment set:html={dontSvg(i)} /><div>{d}</div></div>)}</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>{b.dlT}</h2>
+    <div class="dl">{b.dl.map((d) => <a href={`/brand/${d[1]}`} download>{d[0]}<span>{d[1].split('/').pop()}</span></a>)}</div>
+    <p class="lic">{b.lic}</p>
+    <p class="lic"><a href={GH.brand}>{b.gh} →</a></p>
+  </div>
+</section>
+
+<style>
+  .bhero { background: linear-gradient(180deg, #F8FAFC, #fff); padding: 56px 0 30px; }
+  .crumb { font-size: 13px; color: #E8603C; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  h1 { font-size: 44px; margin: 8px 0 12px; letter-spacing: -1px; }
+  .blead { font-size: 20px; color: #36506A; margin: 0 0 28px; line-height: 1.6; }
+  .tiles2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; }
+  .tile { border: 1px solid #E2E8F0; border-radius: 18px; display: flex; align-items: center; justify-content: center; padding: 28px; min-height: 260px; }
+  .tile.dark { background: #0F2A3F; border-color: #0F2A3F; }
+  section { padding: 56px 0; border-top: 1px solid #EEF2F6; }
+  .bhero { border-top: 0; }
+  h2 { font-size: 28px; margin: 0 0 10px; letter-spacing: -.5px; }
+  .sd { color: #475569; font-size: 16px; margin: 0 0 26px; line-height: 1.6; }
+  .story { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; }
+  .story ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+  .story li { display: grid; grid-template-columns: 30px 1fr; gap: 12px; }
+  .num { width: 26px; height: 26px; border-radius: 50%; background: #0F2A3F; color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+  .story b { display: block; font-size: 16px; }
+  .story li span:not(.num) { color: #475569; font-size: 14.5px; line-height: 1.6; }
+  .sw { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .c { border: 1px solid #E2E8F0; border-radius: 14px; overflow: hidden; }
+  .chip { height: 86px; border-bottom: 1px solid #E2E8F0; }
+  .ci { padding: 12px 14px; }
+  .ci b { display: block; font-size: 15px; }
+  .ci code { font-family: Consolas, Menlo, monospace; font-size: 13px; color: #334155; }
+  .ci small { display: block; color: #64748B; font-size: 12.5px; margin-top: 4px; }
+  .cons { display: grid; grid-template-columns: 1.15fr 1fr; gap: 28px; align-items: start; }
+  .cons ul { margin: 0; padding-left: 18px; color: #334155; font-size: 14.5px; line-height: 1.75; }
+  .vers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .v { border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px; }
+  .pv { height: 110px; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; background: #F8FAFC; margin-bottom: 12px; }
+  .pv.dk { background: #0F2A3F; }
+  .v b { font-size: 15px; }
+  .v p { color: #475569; font-size: 13.5px; line-height: 1.55; margin: 6px 0 0; }
+  .donts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .d { border: 1px solid #FECACA; background: #FFF7F7; border-radius: 14px; padding: 12px; text-align: center; font-size: 14px; color: #991B1B; font-weight: 600; }
+  .dl { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .dl a { display: flex; justify-content: space-between; gap: 10px; border: 1px solid #E2E8F0; border-radius: 10px; padding: 12px 16px; text-decoration: none; font-size: 14.5px; }
+  .dl a:hover { border-color: #E8603C; }
+  .dl a span { color: #5B6F86; font-family: Consolas, Menlo, monospace; font-size: 12.5px; }
+  .lic { color: #64748B; font-size: 13.5px; margin-top: 16px; }
+  .lic a { color: #E8603C; font-weight: 600; text-decoration: none; }
+  @media (max-width: 900px) {
+    .tiles2, .story, .cons { grid-template-columns: 1fr; }
+    .sw, .vers, .donts { grid-template-columns: 1fr 1fr; }
+    .dl { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+  }
+</style>

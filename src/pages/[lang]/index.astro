@@ -1,0 +1,8 @@
+---
+import Base from '../../layouts/Base.astro';
+import Home from '../../components/Home.astro';
+import { T } from '../../i18n/content.js';
+export function getStaticPaths() { return ['ko', 'ja', 'zh'].map((lang) => ({ params: { lang } })); }
+const { lang } = Astro.params;
+---
+<Base lang={lang} title={T[lang].meta.title} description={T[lang].meta.description}><Home lang={lang} /></Base>
