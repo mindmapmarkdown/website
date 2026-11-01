@@ -3,7 +3,7 @@ export const LANGS = [
   { code: 'en', html: 'en', label: 'English', short: 'EN', prefix: '' },
   { code: 'ko', html: 'ko', label: '한국어', short: 'KO', prefix: '/ko' },
   { code: 'ja', html: 'ja', label: '日本語', short: 'JA', prefix: '/ja' },
-  { code: 'zh', html: 'zh-Hans', label: '中文', short: '中文', prefix: '/zh' },
+  { code: 'zh', html: 'zh-Hans', label: '中文', short: 'ZH', prefix: '/zh' },
 ];
 
 export const GH = {

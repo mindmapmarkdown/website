@@ -1,0 +1,38 @@
+---
+// Small inline SVG flags. Emoji flags do not render on Windows, so the flags are drawn.
+const { code, size = 22 } = Astro.props;
+const h = Math.round((size * 2) / 3);
+
+// US: 13 stripes and a blue canton (stars simplified to dots)
+const usStripes = Array.from({ length: 7 }, (_, i) => `<rect y="${(i * 2 * 20) / 13}" width="30" height="${20 / 13}" fill="#B22234"/>`).join('');
+const usStars = [];
+for (let r = 0; r < 5; r++) for (let c = 0; c < (r % 2 ? 5 : 6); c++) usStars.push(`<circle cx="${1.1 + c * 2.1 + (r % 2 ? 1.05 : 0)}" cy="${1.2 + r * 2.05}" r="0.45" fill="#fff"/>`);
+
+// Korea: taegeuk and four trigrams
+const bar = (x, y, rot, broken) => {
+  const parts = [];
+  for (let i = 0; i < 3; i++) {
+    const yy = y - 1.6 + i * 1.6;
+    if (broken[i]) parts.push(`<rect x="${x - 2.2}" y="${yy - 0.45}" width="1.9" height="0.9"/><rect x="${x + 0.3}" y="${yy - 0.45}" width="1.9" height="0.9"/>`);
+    else parts.push(`<rect x="${x - 2.2}" y="${yy - 0.45}" width="4.4" height="0.9"/>`);
+  }
+  return `<g transform="rotate(${rot} ${x} ${y})">${parts.join('')}</g>`;
+};
+
+const flags = {
+  en: `<rect width="30" height="20" fill="#fff"/>${usStripes}<rect width="13" height="${(7 * 20) / 13}" fill="#3C3B6E"/>${usStars.join('')}`,
+  ko: `<rect width="30" height="20" fill="#fff"/>
+    <g transform="rotate(33.7 15 10)"><circle cx="15" cy="10" r="5" fill="#0047A0"/><path d="M10 10 A5 5 0 0 1 20 10 A2.5 2.5 0 0 0 15 10 A2.5 2.5 0 0 1 10 10Z" fill="#CD2E3A"/></g>
+    <g fill="#000">${bar(6.2, 4.3, -56.3, [0, 0, 0])}${bar(23.8, 15.7, -56.3, [1, 1, 1])}${bar(23.8, 4.3, 56.3, [1, 0, 1])}${bar(6.2, 15.7, 56.3, [0, 1, 0])}</g>`,
+  ja: `<rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="6" fill="#BC002D"/>`,
+  zh: `<rect width="30" height="20" fill="#DE2910"/>
+    <path d="M5 2.2l1.18 3.62h3.8l-3.08 2.24 1.18 3.62L5 9.44l-3.08 2.24 1.18-3.62L.02 5.82h3.8z" fill="#FFDE00"/>
+    <g fill="#FFDE00"><circle cx="10" cy="2" r=".75"/><circle cx="12" cy="4" r=".75"/><circle cx="12" cy="7" r=".75"/><circle cx="10" cy="9" r=".75"/></g>`,
+};
+const svg = `<svg class="flag" viewBox="0 0 30 20" width="${size}" height="${h}" aria-hidden="true" focusable="false">${flags[code]}</svg>`;
+---
+<Fragment set:html={svg} />
+
+<style is:global>
+  .flag { display: inline-block; flex: none; border-radius: 2px; box-shadow: 0 0 0 1px rgba(15, 42, 63, 0.18); vertical-align: middle; }
+</style>
