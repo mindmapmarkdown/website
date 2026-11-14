@@ -17,6 +17,10 @@ The site introduces the project and links to the specification. The normative te
 
 URLs: `/` (English), `/ko/`, `/ja/`, `/zh/`. Each has a `brand/` page.
 
+## Languages
+
+English is the source and the authoritative text. How translations are written here, what is never translated, and why this site carries no runtime translation widget are stated once, for the whole project, in [`docs/i18n.md`](https://github.com/mindmapmarkdown/spec/blob/main/docs/i18n.md) ([한국어](https://github.com/mindmapmarkdown/spec/blob/main/docs/ko/i18n.md)). Not copied here, so that the two cannot disagree.
+
 ## Develop
 
 ```sh
